@@ -2,15 +2,45 @@ import { Link as RouterLink } from 'react-router-dom'
 import { Grid, Typography, TextField, Button, Link } from '@mui/material';
 import { Google } from '@mui/icons-material'
 import { AuthLayout } from '../layout/AuthLayout';
+import { useForm } from '../../hooks/useForm';
+import { useDispatch } from 'react-redux';
+import { checkingAuthentication, startGoogleSignIn } from '../../store/auth/thunks';
 
 
 export const LoginPage = () => {
+
+    //usamos useDispatch de react-reduc para poder utilizar los metodos 
+    const dispatch = useDispatch();
+
+    //usamos el custom Hook que creamos en videos anteriores useForm
+    const { email, password, onInputChange } = useForm({
+        email:'Pepe@gmail.com',
+        password: '123456'
+    });
+
+    //metodo para autenticar los datos introducidos en el login
+    const onSubmit = ( event ) => {
+        event.preventDefault();
+        console.log( {email, password} );
+
+        dispatch ( checkingAuthentication() );
+        
+    }
+
+    //funcion para validar el login con google
+    const onGoogleSignIn = () => {
+        console.log('onGoogleSign');
+
+        dispatch ( startGoogleSignIn () );
+      
+    }
+
     return (
 
         //usamos el componente AuthLayout que contiene codigo comun para las interfaces
         <AuthLayout title="Login">
 
-            <form>
+            <form onSubmit= { onSubmit }>
                 <Grid container>
                     {/* con xs={ 12 } decimos que en pantalla pequeña tome las 12 posiciones osea todo como en bootstrap el total son 12 posiciones 
                         mt:2 es margin top de 2*/}
@@ -20,6 +50,11 @@ export const LoginPage = () => {
                             type="email"
                             placeholder='correo@google.com'
                             fullWidth
+                            name="email"
+                            value={ email }
+                            //llamamos a la funcion onInputChange del CustomHook useFrom
+                            onChange= { onInputChange }
+
                         />
                     </Grid>
 
@@ -29,6 +64,10 @@ export const LoginPage = () => {
                             type="password"
                             placeholder='contraseña'
                             fullWidth
+                            name="password"
+                            value={ password }
+                            //llamamos a la funcion onInputChange del CustomHook useFrom
+                            onChange= { onInputChange }
                         />
                     </Grid>
 
@@ -37,12 +76,12 @@ export const LoginPage = () => {
                         y en espacios pequeños uno de bajo del otro*/}
                     <Grid container spacing={2} sx={{ mb: 2, mt: 1 }}>
                         <Grid item xs={12} sm={6}>
-                            <Button variant='contained' fullWidth>
+                            <Button type="submit" variant='contained' fullWidth>
                                 Login
                                 </Button>
                         </Grid>
                         <Grid item xs={12} sm={6}>
-                            <Button variant='contained' fullWidth>
+                            <Button onClick={ onGoogleSignIn } variant='contained' fullWidth>
                                 {/* ponemos el icono de google y con Typography ponemos google 
                                     con un margin left de 1*/}
                                 <Google />
