@@ -13,10 +13,27 @@ export const authSlice = createSlice({
         errorMessage: null,
     },
     reducers: {
-        login: (state, action) => {
+        login: (state, { payload }) => {
+
+            //recibimos la informacion del archivo thunks.js y con el pauload ponemos
+            //los valores obtenidos cambiando el estado 
+            state.status = 'authenticated', //'authenticated, 'checking'
+            state.uid = payload.uid;
+            state.email = payload.email;
+            state.displayName = payload.displayName;
+            state.photoURL = payload.photoURL;
+            state.errorMessage = null;
 
         },
-        logOut: (state, payload) => {
+        logOut: (state, { payload }) => {
+
+            //reseteamos los valores
+            state.status = 'not-authenticated', //'authenticated, 'checking'
+            state.uid = null;
+            state.email = null;
+            state.displayName = null;
+            state.photoURL = null;
+            state.errorMessage = payload.errorMessage;
 
         },
         checkingCredentials: (state) => {

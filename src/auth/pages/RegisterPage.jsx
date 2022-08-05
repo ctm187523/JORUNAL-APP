@@ -1,16 +1,46 @@
 import { Link as RouterLink } from 'react-router-dom'
 import { Grid, Typography, TextField, Button, Link } from '@mui/material';
-import { Google } from '@mui/icons-material'
 import { AuthLayout } from '../layout/AuthLayout';
+import { useForm } from '../../hooks';
 
+//constante para enviar al useForm de abajo como initialState
+const formData = {
+    email: 'Pepe@gmail.com',
+    password: '123456',
+    displayName: 'Pepe Gotera'
+}
+
+//creamos un objeto para validar la entrada de datos del registro
+//este objeto se lo mandaremos al useForm como determinar si los datos 
+//introducidos son correctos, creamos un array en cada validacion donde el
+//primer elemento es la validacion y el segundo el mensaje de error
+//pasamos el formValidations como segundo argumento del useForm
+//hemos modificado el useForm original
+const formValidations = {
+    email: [ (value) => value.includes('@'), 'El email debe de tener una arroba'],
+    password: [ (value) => value.length >= 6, 'El password debe de tener más de 6 letras'],
+    displayName: [ (value) => value.length >= 1, 'El nombre es obligatorio'],
+
+}
 
 export const RegisterPage = () => {
+
+    //usamos el custom Hook que creamos en videos anteriores useForm
+    const { 
+        displayName, email, password, onInputChange, formState,
+        isFormValid, displayNameValid, emailValid, passwordValid
+    } = useForm(formData, formValidations);
+
+    const onSubmit = (event) => {
+        event.preventDefault();
+        console.log(formState)
+    }
     return (
 
         //usamos el componente AuthLayout que contiene codigo comun para las interfaces
         <AuthLayout title="Crear cuenta">
 
-            <form>
+            <form onSubmit={onSubmit}>
                 <Grid container>
                     {/* con xs={ 12 } decimos que en pantalla pequeña tome las 12 posiciones osea todo como en bootstrap el total son 12 posiciones 
                         mt:2 es margin top de 2*/}
@@ -22,6 +52,13 @@ export const RegisterPage = () => {
                             type="text"
                             placeholder='Nombre completo'
                             fullWidth
+                            name="displayName"
+                            value={displayName}
+                            onChange={onInputChange}
+                            //usamos material UI para usar error, en rojo en caso de error si la variable displayNameValid es false
+                            //y helperText en caso de error sale una texto de ayuda con un mensaje personalizado
+                            error= { !displayNameValid }
+                            helperText={ displayNameValid }
                         />
                     </Grid>
 
@@ -31,6 +68,9 @@ export const RegisterPage = () => {
                             type="email"
                             placeholder='correo@google.com'
                             fullWidth
+                            name="email"
+                            value={email}
+                            onChange={onInputChange}
                         />
                     </Grid>
 
@@ -40,6 +80,9 @@ export const RegisterPage = () => {
                             type="password"
                             placeholder='contraseña'
                             fullWidth
+                            name="password"
+                            value={password}
+                            onChange={onInputChange}
                         />
                     </Grid>
 
@@ -47,7 +90,10 @@ export const RegisterPage = () => {
                       */}
                     <Grid container spacing={2} sx={{ mb: 2, mt: 1 }}>
                         <Grid item xs={12}>
-                            <Button variant='contained' fullWidth>
+                            <Button
+                                type="submit"
+                                variant='contained'
+                                fullWidth>
                                 Crear cuenta
                                 </Button>
                         </Grid>
