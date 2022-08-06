@@ -1,7 +1,7 @@
 
 //proveedores de autenticacion, en nuestro caso google ver video 274
 
-import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, updateProfile } from "firebase/auth";
 import { FirebaseAuth } from "./config";
 
 const googleProvider = new GoogleAuthProvider();
@@ -24,6 +24,7 @@ export const singInWithGoogle = async () => {
         //la informacion que queramos obtener
         const { displayName, email, photoURL, uid } = result.user;
 
+
         //retornamos la informacion recibida
         return {
             ok: true,
@@ -37,10 +38,45 @@ export const singInWithGoogle = async () => {
         // Handle Errors here.
         const errorCode = error.code;
         const errorMessage = error.message;
-
         return {
             ok: false,
             errorMessage
         }
     }
+}
+
+
+//creamos un nuevo proveedor que sera el de registrarse con usuario i password
+export const registerUserWithEmailPassword = async ({ email, password, displayName }) => {
+
+    try {
+
+        //debemos insertar los nuevos usarios registrados a Firebase, usando la funcion
+        //createUserWithEmailAndPassword de Firebase, le pasamos por argumento FireBaseAuth del archivo 
+        //config.js , seguidamente del email y del password
+        const resp = await createUserWithEmailAndPassword(FirebaseAuth, email, password);
+
+        //desestructuramos de la respuesta recibida(resp.user) el uid y el photoUrl
+        const { uid, photoURL } = resp.user;
+        console.log(resp);
+
+        //usamos el metodo updateProfile de Firebase para actualizar al usuario creado anteriormente concreateUserWithEmailAndPassword
+        //como parametro pasamos al usuario usando FirebaseAuth del archivo config.js
+        //con esta funcion obtenemos el usuario actual gracias al metodo antes utilizado createUserWithEmailAndPassword
+        //y seguidamente actualizamos(segundo parametro de updateProfile) insertando el displayName ya que antes solo teniamos email y password
+        await updateProfile(FirebaseAuth.currentUser, { displayName });
+
+
+        return {
+            ok: true,
+            uid, photoURL, email, displayName
+        }
+
+
+    } catch (error) {
+        //console.log(error);
+        return { ok: false, errorMessage: error.message }
+
+    }
+
 }
