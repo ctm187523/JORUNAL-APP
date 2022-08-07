@@ -71,7 +71,11 @@ export const RegisterPage = () => {
             {/* usamos el valor obtenido isFormValid del custom Hook useForm linea 30, lo comentamos solo era de prueba */}
             {/* <h1>FormValid: { isFormValid ? 'Valido': 'Incorrecto'}</h1> */}
 
-            <form onSubmit={onSubmit}>
+            <form
+                onSubmit={onSubmit}
+                // ponemos una animacion
+                className='animate__animated animate__fadeIn animate__faster'
+            >
                 <Grid container>
                     {/* con xs={ 12 } decimos que en pantalla pequeña tome las 12 posiciones osea todo como en bootstrap el total son 12 posiciones 
                         mt:2 es margin top de 2*/}
@@ -135,17 +139,17 @@ export const RegisterPage = () => {
                       */}
                     <Grid container spacing={2} sx={{ mb: 2, mt: 1 }}>
 
-                        <Grid 
-                            item 
+                        <Grid
+                            item
                             xs={12}
                             // con la propiedad displayName le decimos que solo se muestre el Alert
                             //usando la doble negacion para que se convierta en booleano si no hay nada
                             //el display sera un estring vacio en caso contrario sera none y en css display none se usa
                             //para que no se muestre
-                            display = { !!errorMessage ? '': 'none'}
+                            display={!!errorMessage ? '' : 'none'}
                         >
                             {/* usamos el componente de material Alert para que muestre el errorMessage*/}
-                            <Alert severity='error'> { errorMessage } </Alert>
+                            <Alert severity='error'> {errorMessage} </Alert>
                         </Grid>
                         <Grid item xs={12}>
                             <Button

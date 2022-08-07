@@ -1,7 +1,7 @@
 
 //tareas asincronas
 
-import { loginWithEmailPassword, registerUserWithEmailPassword, singInWithGoogle } from "../../firebase/providers";
+import { loginWithEmailPassword, logoutFirebase, registerUserWithEmailPassword, singInWithGoogle } from "../../firebase/providers";
 import { checkingCredentials, login, logOut } from "./authSlice";
 
 
@@ -76,4 +76,17 @@ export const startLoginWithEmailPassword = ({ email, password }) => {
         dispatch(login(result));
 
     }
+}
+
+//creamos la funcion que llama a la funcion logoutFirebase del archivo provider.js
+//para que el usuario pueda hacer logout
+export const startLogout = () => {
+
+    return async( dispatch ) => {
+
+        await logoutFirebase();
+
+        dispatch( logOut( { })); //mediante el dispatch llamamos a la funcion de authSlice logOut
+    }
+
 }

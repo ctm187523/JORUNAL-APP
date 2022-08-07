@@ -1,8 +1,21 @@
 import { LogoutOutlined, MenuOutlined } from "@mui/icons-material"
 import { AppBar, Grid, IconButton, Toolbar, Typography } from "@mui/material"
+import { useDispatch } from "react-redux"
+import { startLogout } from "../../store/auth/thunks";
 
 
 export const NavBar = ({ drawerWidth = 240 }) => {
+
+    //importamos la funcion useDispatch de Reax_redux para poder acceder a los metodos del authSlice.js mediante el store.js
+    const dispatch = useDispatch();
+
+    //funcion para realizar el logout
+    const onLogout = () => {
+        //mediante la constante dispatch obtenida en linea 10 llamamos al metodo startLogout
+        //del archivo thunks.js para que el usuario pueda hacer logout
+        dispatch( startLogout() );
+    }
+
     return (
 
         // usamos AppBar de material ui
@@ -32,10 +45,13 @@ export const NavBar = ({ drawerWidth = 240 }) => {
                     container
                     direction='row'
                     justifyContent='space-between' alignItems='center'>
-                        <Typography variant='h6' noWrap component='div'> JournalApp</Typography>
-                        <IconButton color='error'>
-                            <LogoutOutlined />
-                        </IconButton>
+                    <Typography variant='h6' noWrap component='div'> JournalApp</Typography>
+                    <IconButton
+                        color='error'
+                        onClick= { onLogout }
+                        >
+                        <LogoutOutlined />
+                    </IconButton>
 
                 </Grid>
             </Toolbar>

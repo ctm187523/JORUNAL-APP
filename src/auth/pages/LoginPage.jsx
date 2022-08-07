@@ -52,7 +52,11 @@ export const LoginPage = () => {
         //usamos el componente AuthLayout que contiene codigo comun para las interfaces
         <AuthLayout title="Login">
 
-            <form onSubmit={onSubmit}>
+            <form
+                onSubmit={onSubmit}
+                // ponemos una animacion
+                className='animate__animated animate__fadeIn animate__faster'
+            >
                 <Grid container>
                     {/* con xs={ 12 } decimos que en pantalla pequeña tome las 12 posiciones osea todo como en bootstrap el total son 12 posiciones 
                         mt:2 es margin top de 2*/}
@@ -91,7 +95,7 @@ export const LoginPage = () => {
                         //el display sera un estring vacio en caso contrario sera none y en css display none se usa
                         //para que no se muestre
                         display={!!errorMessage ? '' : 'none'}
-                        sx={{ mt:1 }}
+                        sx={{ mt: 1 }}
                     >
                         <Grid
                             item

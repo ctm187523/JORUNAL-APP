@@ -6,7 +6,7 @@
 
 import { Grid, Typography } from "@mui/material"
 
-export const AuthLayout = ({ children, title = ''}) => {
+export const AuthLayout = ({ children, title = '' }) => {
     return (
 
 
@@ -27,18 +27,19 @@ export const AuthLayout = ({ children, title = ''}) => {
             <Grid item
                 className='box-shadow'
                 xs={3}
-                sx={{ 
+                sx={{
                     // en pantallas medianas el contenedor blanco tendra 450 pixeles
-                    width: { md: 450},
-                    backgroundColor: 'white', 
-                    padding: 3, 
-                    borderRadius: 2 }}
+                    width: { md: 450 },
+                    backgroundColor: 'white',
+                    padding: 3,
+                    borderRadius: 2
+                }}
             >
 
-                <Typography variant='h5' sx={{ mb: 1 }}>{ title }</Typography>
+                <Typography variant='h5' sx={{ mb: 1 }}>{title}</Typography>
 
                 {/* Aqui iran los children del AuthLayout */}
-                { children }
+                {children}
 
             </Grid>
         </Grid>

@@ -1,8 +1,13 @@
 import { TurnedInNot } from "@mui/icons-material"
 import { Box, Divider, Drawer, Grid, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Toolbar, Typography } from "@mui/material"
+import { useSelector } from "react-redux"
 
 
 export const SideBar = ({ drawerWidth = 240 }) => {
+
+    //usamos useSelector para poder acceder a las variables del archivo authSlice mediante el store.js
+    const { displayName  } = useSelector(state => state.auth)
+
     return (
 
         <Box
@@ -18,7 +23,7 @@ export const SideBar = ({ drawerWidth = 240 }) => {
                 }}>
 
                 <Toolbar>
-                    <Typography variant='h6' noWrap component='div'>Clemente Tiñena</Typography>
+                    <Typography variant='h6' noWrap component='div'>{ displayName }</Typography>
                 </Toolbar>
                 <Divider />
 
