@@ -1,7 +1,7 @@
 
 //tareas asincronas
 
-import { registerUserWithEmailPassword, singInWithGoogle } from "../../firebase/providers";
+import { loginWithEmailPassword, registerUserWithEmailPassword, singInWithGoogle } from "../../firebase/providers";
 import { checkingCredentials, login, logOut } from "./authSlice";
 
 
@@ -42,17 +42,38 @@ export const startCreatingUserWithEmailPassword = ({ email, password, displayNam
 
         //llamamos al metodo registerUserWithEmailPassword del archivo providers linea 50
         //una vez obtenida la informacion la desestructuramos con ok, uid, photoURL
-        const { ok, uid, photoURL, errorMessage  } = await registerUserWithEmailPassword({ email, password, displayName });
+        const { ok, uid, photoURL, errorMessage } = await registerUserWithEmailPassword({ email, password, displayName });
 
         //si el ok es false, algo salio mal usamos dispatch para llamar a la funcion logOut de authSlice.js y 
         //pasarle como argumento el error
-        if( !ok ) return dispatch( logOut( {errorMessage}));
+        if (!ok) return dispatch(logOut({ errorMessage }));
 
         //si todo sale bien logueamos al usuario usando dispatch para llamar a la funcion login de authSlice.js
-        dispatch( login( { uid, displayName, email, photoURL }))
-   
+        dispatch(login({ uid, displayName, email, photoURL }))
+
 
     }
 
 
+}
+
+//funcion para autenticarnos en Firebase con un usuario ya craedo
+export const startLoginWithEmailPassword = ({ email, password }) => {
+
+    return async (dispatch) => {
+
+        dispatch(checkingCredentials());
+
+        //llamamos a la funcion del archivo providers.js
+        const result = await loginWithEmailPassword({ email, password });
+       
+        //si recibimos result.ok en false llamamos a la funcion logOut de authSlice
+        //mandamos como payload el errorMessage recibido en el result
+        if (!result.ok) return dispatch(logOut( result ));
+
+        //si todo esta bien usamos la funcion login del archivo authSlice y le pasamos al
+        //al archivo authSlice el resultado obtenido(result)
+        dispatch(login(result));
+
+    }
 }

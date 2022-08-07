@@ -1,7 +1,7 @@
 
 //proveedores de autenticacion, en nuestro caso google ver video 274
 
-import { createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, updateProfile } from "firebase/auth";
+import { createUserWithEmailAndPassword, GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup, updateProfile } from "firebase/auth";
 import { FirebaseAuth } from "./config";
 
 const googleProvider = new GoogleAuthProvider();
@@ -74,8 +74,43 @@ export const registerUserWithEmailPassword = async ({ email, password, displayNa
 
 
     } catch (error) {
-        //console.log(error);
-        return { ok: false, errorMessage: error.message }
+
+        return { 
+            ok: false, 
+            errorMessage: error.message
+         }
+
+    }
+
+}
+
+//peticion a Firebase para autenticar el registro de un usuario registrado
+export const loginWithEmailPassword = async ({ email, password }) => {
+
+    try {
+        //utilizamos la funcion signInWithEmailAndPassword de Firebase
+        const result = await signInWithEmailAndPassword(FirebaseAuth, email, password);
+
+        //obtenemos el usuario(user) de la informacion recibida y lo desestructuramos con
+        //la informacion que queramos obtener
+        const { displayName, photoURL, uid } = result.user;
+
+
+        //retornamos la informacion recibida
+        return {
+            ok: true,
+            //informacion del usuario
+            displayName, photoURL, uid
+        }
+
+
+    } catch (error) {
+
+
+        return {
+            ok: false, 
+            errorMessage: error.message
+        }
 
     }
 
