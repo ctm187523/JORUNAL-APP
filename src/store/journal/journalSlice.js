@@ -41,10 +41,22 @@ export const journalSlice = createSlice({
             state.notes = action.payload;
         },
         setSaving: (state) => {
-
+            state.isSaving = true;
         },
-        updateNote: (state, action) => {
+        //actualizamos la nota modificada
+        updateNote: (state, action) => { //el payload es la nota actualizada
+            state.isSaving = false;
+            state.notes = state.notes.map( note => {
+                //verificamos cual ha sido la nota modificada en el payload para que sea modificado segun su id
+                // si coincide retorna la nota modificada y sale del bucle
+                if ( note.id === action.payload.id){
+                    return action.payload;
+                }
 
+                return note;
+            });
+
+            //mostramos el mensaje de actualizacion de la nota
         },
         deleteNoteById: (state, action) => {
 

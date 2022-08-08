@@ -7,6 +7,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { checkingAuthentication, startGoogleSignIn, startLoginWithEmailPassword } from '../../store/auth/thunks';
 import { useMemo } from 'react';
 
+const formData = {
+    email: '',
+    password: ''
+}
 
 export const LoginPage = () => {
 
@@ -18,11 +22,8 @@ export const LoginPage = () => {
     //usamos useDispatch de react-reduc para poder utilizar los metodos 
     const dispatch = useDispatch();
 
-    //usamos el custom Hook que creamos en videos anteriores useForm
-    const { email, password, onInputChange } = useForm({
-        email: '',
-        password: ''
-    });
+    //usamos el custom Hook que creamos en videos anteriores useForm, usamos la constante formData creada arriba en la linea 10
+    const { email, password, onInputChange } = useForm(formData);
 
     //usamos el Hook useMemo de React para memorizar el resultado del status obtenido en la linea 16
     //comprovamos mediante un booleano si el estatus es checking,la dependencia sera el status

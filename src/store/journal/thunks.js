@@ -4,7 +4,7 @@
 import { collection, doc, setDoc } from "firebase/firestore/lite";
 import { FirebaseDb } from "../../firebase/config";
 import { loadNotes } from "../../helpers/loadNotes";
-import { addNewEmptyNote, savingNewNote, setActiveNote, setNotes } from "./journalSlice";
+import { addNewEmptyNote, savingNewNote, setActiveNote, setNotes, setSaving, updateNote } from "./journalSlice";
 
 export const startNewNote = () => {
 
@@ -69,5 +69,33 @@ export const startLoadingNotes = () => {
 
         //llamamos al metodo setNotes del archivo journalSlice.js para que se carguen las notas
         dispatch(setNotes(notes));
+    }
+}
+
+//metodo para grabar la nota con los cambios efectuados
+export const startSaveNote = () => {
+    return async(dispatch, getState) => {
+
+        dispatch( setSaving() ); //llamamos a setSaving de journalSlice
+
+        const { uid } = getState().auth;
+        const { active:note } = getState().journal; // cambiamos el nombre de active a note y del sliceJournal recuperamos la nota activa
+
+        const noteToFireStore = { ...note }; //esparcimos los atributos de la nota(spread)
+
+        //usamos delete de javaScript para eliminar la propiedad id
+        delete noteToFireStore.id; 
+
+        //creamos la referencia al documento como hicimos en los metodos de arriba añadiendo el id
+        const docRef = doc( FirebaseDb,  `${ uid }/journal/notes/${ note.id }`);
+
+        //creamos los cambios usando setDoc de Firestore le mandamos como primer parametro la referencia completa
+        //incluyendo el id del objeto a modificar, como segundo parametro el noteToFireStore que incluye la nota exceptuando
+        //el id para ya que no es un elmento propio del objeto y por ultimo con el tercer parametro
+        //merge: true hacemos que si los campos que mandamos no existian en el original, se mantienen los del original
+        await setDoc(docRef, noteToFireStore, { merge: true});
+        
+        //llamamos al metodo del journalSlice.js para que modifique la nota actualizada dentro del array de notas
+        dispatch( updateNote ( note )); 
     }
 }
