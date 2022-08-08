@@ -1,10 +1,10 @@
 
 //tareas asincronas
 
-import { ConstructionOutlined } from "@mui/icons-material";
 import { collection, doc, setDoc } from "firebase/firestore/lite";
 import { FirebaseDb } from "../../firebase/config";
-import { addNewEmptyNote, savingNewNote, setActiveNote } from "./journalSlice";
+import { loadNotes } from "../../helpers/loadNotes";
+import { addNewEmptyNote, savingNewNote, setActiveNote, setNotes } from "./journalSlice";
 
 export const startNewNote = () => {
 
@@ -15,9 +15,9 @@ export const startNewNote = () => {
     //debemos acceder al uid del usuario gracias al getState
     return async (dispatch, getState) => {
 
-        //hacemos dispatch al metodo savingNewNote() de jornalSlice.js para dambiar el estado del isSaving a true y asi usarlo
+        //hacemos dispatch al metodo savingNewNote() de jornalSlice.js para cambiar el estado del isSaving a true y asi usarlo
         //para desabilitar el boton de agregar nota mientras se salva una nota
-        dispatch( savingNewNote());
+        dispatch(savingNewNote());
 
         //obtenemos el uid del usuario logeado desestructurando el getState().auth y que lo busque dentro del slice auth
         const { uid } = getState().auth;
@@ -48,8 +48,26 @@ export const startNewNote = () => {
 
         //usamos el dispatch para llamar al metodo setActiveNote del journalSlice.js
         //como payload pasamos el newNote
-        dispatch(setActiveNote( newNote));
+        dispatch(setActiveNote(newNote));
 
-        //dispatch( savingNewNote());
+    }
+}
+
+//creamos una nueva funcion para cargar las notas de firestore, esta funcion es llamada
+//desde el custom Hook hooks/useCheckAuth
+export const startLoadingNotes = () => {
+    return async (dispatch, getState) => {
+
+        //obtenemos el uid del usuario logeado desestructurando el getState().auth y que lo busque dentro del slice auth
+        const { uid } = getState().auth;
+
+        //ponemos una condicion que si el uid del usuario no existe mandamos un error
+        if ( !uid ) throw new Error('El UID del usuario no existe');
+
+        //llamamos al metodo loadNotes de helpers/loadNotes.js
+        const notes = await loadNotes(uid);
+
+        //llamamos al metodo setNotes del archivo journalSlice.js para que se carguen las notas
+        dispatch(setNotes(notes));
     }
 }

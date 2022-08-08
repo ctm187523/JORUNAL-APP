@@ -12,8 +12,8 @@ export const JournalPage = () => {
     const dispatch = useDispatch();
 
     //llamamos al metodo useSelector para poder acceder a las states de los slices del store en este caso del journalSlice.js
-    const { isSaving } = useSelector(state => state.journal);
-   
+    const { isSaving, active } = useSelector(state => state.journal);
+
     //metodo para crear una nueva nota al hacer click en el boton flotante
     const onClickNewNote = () => {
 
@@ -25,21 +25,24 @@ export const JournalPage = () => {
         //usamos el componente JornalLayout.jsx para tomar su estilos predefinidos
         <JournalLayout>
 
-            {/* <Typography> dsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsd</Typography> */}
+            {/* Usamos el componente NothingSelected.jsx,cuando no hay nada seleccionado 
+         Usamos el componente NoteView.jsx cuando hay algo seleccionado 
+         podriamos poner en la condicion active === null pero usamos !!active
+         y de esta manera lo transformamos en un booleano*/}
 
-            {/* Usamos el componente NothingSelected.jsx, es el componente que mostramos
-            cuando no hay nada seleccionado */}
-            <NothingSelectedView />
+            {
+                (!!active)
+                    ? <NoteView />
+                    : <NothingSelectedView />
+            }
 
-            {/* Usamos el componente NoteView.jsx cuando hay algo seleccionado*/}
-            {/* <NoteView /> */}
 
             {/* creamos un boton flotante para añadir nuevas notas */}
             <IconButton
                 // llamamos al metodo onClickNewNote
-                onClick= { onClickNewNote }
+                onClick={onClickNewNote}
                 size='large'
-                disabled= { isSaving }
+                disabled={isSaving}
                 sx={{
                     color: 'white',
                     backgroundColor: 'error.main',
@@ -48,9 +51,9 @@ export const JournalPage = () => {
                     right: 50,
                     bottom: 50
                 }}
-                >
+            >
                 {/* usamos el icono de material UI AddOutLined */}
-                <AddOutlined sx={{ fontSize: 30 }}/>
+                <AddOutlined sx={{ fontSize: 30 }} />
             </IconButton>
 
         </JournalLayout>

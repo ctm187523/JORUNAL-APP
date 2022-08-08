@@ -1,12 +1,17 @@
 import { TurnedInNot } from "@mui/icons-material"
 import { Box, Divider, Drawer, Grid, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Toolbar, Typography } from "@mui/material"
 import { useSelector } from "react-redux"
+import { SideBarItem } from "./SideBarItem";
 
 
 export const SideBar = ({ drawerWidth = 240 }) => {
 
     //usamos useSelector para poder acceder a las variables del archivo authSlice mediante el store.js
-    const { displayName  } = useSelector(state => state.auth)
+    const { displayName  } = useSelector(state => state.auth);
+
+     //usamos useSelector para poder acceder a las variables del archivo journalSlice mediante el store.js
+     //seleccionamos las notas para que se muestren en el menu lateral
+     const { notes } = useSelector(state => state.journal);
 
     return (
 
@@ -30,19 +35,11 @@ export const SideBar = ({ drawerWidth = 240 }) => {
                 {/* Usamos List de material Ui */}
                 <List>
                     {
-                        ['Enero', 'Febrero', 'Marzo', 'Abril'].map(text =>
-
-                            <ListItem key={text} disablePadding>
-                                <ListItemButton>
-                                    <ListItemIcon>
-                                        <TurnedInNot />
-                                    </ListItemIcon>
-                                    <Grid container>
-                                        <ListItemText primary={ text } />
-                                        <ListItemText secondary={ 'esto es un ejemplo solo para que se vea algo'} />
-                                    </Grid>
-                                </ListItemButton>
-                            </ListItem>
+                        //recorremos las notas obtenidas en la linea 13, usamos
+                        //el componente creado SideBarItem para mostrar las notas en el menu lateral
+                        //le pasamos la prop de note con un spread para esparcir todas sus varaibles
+                        notes.map(note =>
+                           <SideBarItem key={note.id} {...note}/>
                         )
                     }
 

@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { FirebaseAuth } from "../firebase/config";
 import { login, logOut } from "../store/auth";
+import { startLoadingNotes } from "../store/journal";
 
 
 //creamos un custom hook para usarlo en AppRouter.jsx
@@ -33,6 +34,9 @@ export const useCkeckAuth = () => {
             //en caso contrario llamamos al login de authSlice, antes desestructurando el user
             const { uid, email, displayName, photoUrl } = user;
             dispatch(login({ uid, email, displayName, photoUrl }));
+
+            //llamamos a la funcion startLoadingNotes de journal/thunks para cargar las notas del usuario loggeado de firestore
+            dispatch( startLoadingNotes());
         })
 
     }, []);

@@ -8,7 +8,7 @@ export const journalSlice = createSlice({
         messageSaved: '',
         notes: [],
         active: null,
-        //active serie una nota
+        //active seria una nota
         // active: {
         //     id: 'ABC123',
         //     title: '',
@@ -23,18 +23,22 @@ export const journalSlice = createSlice({
         savingNewNote: ( state ) => {
             state.isSaving = true;
         },
+        //añadimos una nueva nota al ser pulsado el boton flotante
         addNewEmptyNote: (state, action) => {
 
-            //añadimos a la variable notes del state el action.payload recibido por parametro
+            //añadimos al array notes la nueva nota 
             state.notes.push(action.payload);
             state.isSaving = false; //cambiamos a false el isSaving del state
 
         },
+        //cargamos la nota activa que se acaba de cargar, al crear una nueva nota en active se muestra la nota que se acaba de insertar
+        //tambien se llama esta funcion al seleccionar una nota del menu lateral
         setActiveNote: (state, action) => {
             state.active = action.payload;
         },
+        //cargamos todas las notas que se encuentran en firebase del usuario loggeado
         setNotes: (state, action) => {
-
+            state.notes = action.payload;
         },
         setSaving: (state) => {
 
