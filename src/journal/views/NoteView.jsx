@@ -4,10 +4,16 @@ import { SaveOutlined } from "@mui/icons-material"
 import { Button, Grid, TextField, Typography } from "@mui/material"
 import { useEffect, useMemo } from "react"
 import { useDispatch, useSelector } from "react-redux"
+
+import Swal from "sweetalert2"
+//importamos el estilo para el sweetalert2 manualmente
+import 'sweetalert2/dist/sweetalert2.css'
+
 import { useForm } from "../../hooks/useForm"
 import { setActiveNote } from "../../store/journal/journalSlice"
 import { startSaveNote } from "../../store/journal/thunks"
 import { ImageGallery } from "../components"
+
 
 export const NoteView = () => {
 
@@ -17,7 +23,7 @@ export const NoteView = () => {
     //importamos useSelector de React-Redux para poder acceder al store.js
     //y usar el atributo active donde tenemos la nota activa en pantalla en ese momento
     //le cambiamos el nombre de active a note con active:note
-    const { active: note } = useSelector(state => state.journal);
+    const { active: note, messageSaved, isSaving } = useSelector(state => state.journal);
 
     //importamos el Custom Hook useForm que creamos en anteriores videos y ahora modificado con mas funcionalidades
     //como estado inical ponemos la variable note creada arriba, desestructuramos, onInputChange y formState son metodos del custom Hook useForm
@@ -41,8 +47,21 @@ export const NoteView = () => {
         dispatch(setActiveNote(formState));
     }, [formState]);
 
+    //usamos useEffect de React para cuando se detecte un cambio en la propiedad  messageSaved de la nota
+    //se dispare un alert mostrando que la nota ha sido modificada, para ello hemos desacargado de la pagina
+    //sweetalert2 y instalado con yarn add sweetalert2
+    useEffect(() => {
+
+        //disparamos el alert si el messageSaved no es nulo, mayor que 0
+        if (messageSaved.length > 0) {
+            Swal.fire('Nota actualizada', messageSaved, 'success') //usamos lo instaldo de sweetalert2,success es el icono
+        }
+
+    }, [messageSaved])
+
+
     const onSaveNote = () => {
-        dispatch( startSaveNote() ); //llamamos a la funcion startSaveNote del archivo thunks.js para grabar los cambios de una nota
+        dispatch(startSaveNote()); //llamamos a la funcion startSaveNote del archivo thunks.js para grabar los cambios de una nota
     }
 
     return (
@@ -60,7 +79,8 @@ export const NoteView = () => {
             </Grid>
             <Grid item>
                 <Button
-                onClick={ onSaveNote }
+                    disabled= { isSaving }
+                    onClick={onSaveNote}
                     color="primary"
                     sx={{ padding: 2 }}
                 >
