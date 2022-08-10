@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { checkingAuthentication, startGoogleSignIn, startLoginWithEmailPassword } from '../../store/auth/thunks';
 import { useMemo } from 'react';
 
+
 const formData = {
     email: '',
     password: ''

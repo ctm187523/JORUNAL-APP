@@ -63,6 +63,24 @@ export const journalSlice = createSlice({
             //muester el mensaje de que ha sido actualizada la nota correctamente
             state.messageSaved = `${action.payload.title}, actualizada correctamente;`;
         },
+
+        //incluimos en la propiedad active en su atributo imageUrls las imagenes cargadas a cloudinary
+        //como atributo esparcimos las imagenes que ya teniamos mas las obtenidas nuevas en el payload
+        //estas imagenes al pulsar el boton de guardar se guardaran tambien en firestore dentro del active en imageUrls
+        setPhotosToActiveNote(state, action) {
+            state.active.imageUrls = [...state.active.imageUrls, ...action.payload];
+            state.isSaving = false;
+        },
+
+        //metodo para borrar las notas almacenadas al hacer logOut
+        clearNotesLogout: (state) => {
+            state.isSaving = false;
+            state.messageSaved = '';
+            state.notes = [];
+            state.active = null;
+        },
+
+
         deleteNoteById: (state, action) => {
 
         },
@@ -72,4 +90,14 @@ export const journalSlice = createSlice({
 
 
 // Action creators are generated for each case reducer function
-export const { addNewEmptyNote, setActiveNote, setNotes, setSaving, updateNote, deleteNoteById, savingNewNote } = journalSlice.actions;
+export const {
+    addNewEmptyNote,
+    clearNotesLogout,
+    deleteNoteById,
+    savingNewNote,
+    setActiveNote,
+    setNotes,
+    setPhotosToActiveNote,
+    setSaving,
+    updateNote,
+} = journalSlice.actions;

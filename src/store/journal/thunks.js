@@ -3,8 +3,9 @@
 
 import { collection, doc, setDoc } from "firebase/firestore/lite";
 import { FirebaseDb } from "../../firebase/config";
+import { fileUpload } from "../../helpers/fileUpload";
 import { loadNotes } from "../../helpers/loadNotes";
-import { addNewEmptyNote, savingNewNote, setActiveNote, setNotes, setSaving, updateNote } from "./journalSlice";
+import { addNewEmptyNote, savingNewNote, setActiveNote, setNotes, setSaving, updateNote, setPhotosToActiveNote} from "./journalSlice";
 
 export const startNewNote = () => {
 
@@ -97,5 +98,37 @@ export const startSaveNote = () => {
         
         //llamamos al metodo del journalSlice.js para que modifique la nota actualizada dentro del array de notas
         dispatch( updateNote ( note )); 
+    }
+}
+
+export const startUpLoadingFiles = ( files = [] ) => {
+    return async( dispatch, getState ) => {
+
+        dispatch( setSaving() ); //llamamos a setSaving de journalSlice
+
+        //usamos el archivo fileUpload.js creado en la carpeta helpers para hacer la peticion POST
+        //a cloudinary para almacenar las imagenes seleccionadas, mandandoselas por argumento a la funcion
+        //await fileUpload(files[0]);
+
+        //cremos un array  de todos las promesas  que tenemos que cargar
+        const fileUploadPromises = [];
+
+        //usamos un forof para iterar todas las promesas(imagenes) que incluiremos en el archivo creado arriba fileUploadPromises
+        //usando el metodo fileUpload del archivo fileUpload.js
+        //simplemente creamos el arreglo de promesas no las estamos disparando, simplemente las alamcenamos
+        for (const file of files) {
+            fileUploadPromises.push( fileUpload(file) );
+        }
+
+        //usamos el metodo Promise de javaScript que espera el arreglo de Promesas
+        //cuando resuelve obtendremos un nuevo arreglo con cada una de las resoluciones
+        //de las promesas en un mismo orden, esto lo hacemos para que se haga la peticion de todas
+        //las imagenes a la vez
+        const  photosUrls = await Promise.all( fileUploadPromises)
+
+        //almacenamos estos urls de las imagenes obtenidas de cloudinary en el metodo
+        //setPhotosToActiveNote del arichivo journalSlice.js pasandole por parametro
+        //la constante photosUrls con los links de las imagenes cargadas a cloudinary
+        dispatch( setPhotosToActiveNote(photosUrls) );
     }
 }
