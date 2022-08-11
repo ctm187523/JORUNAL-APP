@@ -26,7 +26,7 @@ export const LoginPage = () => {
     //usamos el custom Hook que creamos en videos anteriores useForm, usamos la constante formData creada arriba en la linea 10
     const { email, password, onInputChange } = useForm(formData);
 
-    //usamos el Hook useMemo de React para memorizar el resultado del status obtenido en la linea 16
+    //usamos el Hook useMemo de React para memorizar el resultado del status obtenido en la linea 21
     //comprovamos mediante un booleano si el estatus es checking,la dependencia sera el status
     //para que si el status cambia obtenga el nuevo valor
     const isAuthenticated = useMemo(() => status === 'checking', [status])

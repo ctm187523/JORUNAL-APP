@@ -1,11 +1,11 @@
 
 //tareas asincronas
 
-import { collection, doc, setDoc } from "firebase/firestore/lite";
+import { collection, deleteDoc, doc, setDoc } from "firebase/firestore/lite";
 import { FirebaseDb } from "../../firebase/config";
 import { fileUpload } from "../../helpers/fileUpload";
 import { loadNotes } from "../../helpers/loadNotes";
-import { addNewEmptyNote, savingNewNote, setActiveNote, setNotes, setSaving, updateNote, setPhotosToActiveNote} from "./journalSlice";
+import { addNewEmptyNote, savingNewNote, setActiveNote, setNotes, setSaving, updateNote, setPhotosToActiveNote, deleteNoteById} from "./journalSlice";
 
 export const startNewNote = () => {
 
@@ -130,5 +130,22 @@ export const startUpLoadingFiles = ( files = [] ) => {
         //setPhotosToActiveNote del arichivo journalSlice.js pasandole por parametro
         //la constante photosUrls con los links de las imagenes cargadas a cloudinary
         dispatch( setPhotosToActiveNote(photosUrls) );
+    }
+}
+
+export const startDeletingNote = () => {
+    return async( dispatch, getState )  => {
+
+        //accedemos a las propiedades de los respectivos slices almacenados en el store
+        const { uid } = getState().auth;
+        const { active:note } = getState().journal;
+
+        //construimos la referencia de la nota en firebase
+        const docRef = doc(FirebaseDb, `${ uid }/journal/notes/${ note.id}`);
+        await deleteDoc( docRef ); //usamos el metodo deleteDoc de Firebase
+
+        //limpiamos la nota del store del journalSLice
+        dispatch( deleteNoteById(note.id));
+        
     }
 }

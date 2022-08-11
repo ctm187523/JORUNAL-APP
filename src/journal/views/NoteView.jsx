@@ -1,6 +1,6 @@
 //este funtional component se muestra en el centro cuando hay algo seleccionado
 
-import { SaveOutlined, UploadFileOutlined, UploadOutlined } from "@mui/icons-material"
+import { DeleteOutline, SaveOutlined, UploadFileOutlined, UploadOutlined } from "@mui/icons-material"
 import { Button, Grid, IconButton, TextField, Typography } from "@mui/material"
 import { useEffect, useMemo, useRef } from "react"
 import { useDispatch, useSelector } from "react-redux"
@@ -11,7 +11,7 @@ import 'sweetalert2/dist/sweetalert2.css'
 
 import { useForm } from "../../hooks/useForm"
 import { setActiveNote } from "../../store/journal/journalSlice"
-import { startSaveNote, startUpLoadingFiles } from "../../store/journal/thunks"
+import { startDeletingNote, startSaveNote, startUpLoadingFiles } from "../../store/journal/thunks"
 import { ImageGallery } from "../components"
 
 
@@ -76,6 +76,11 @@ export const NoteView = () => {
         //llamamos al metodo startUpLoadingFiles creado en store/journal/thunks para que se encargue de la
         //carga de archivos en cloudinary pasando como parametro los archivos seleccionados target.files
         dispatch( startUpLoadingFiles( target.files) ); 
+    }
+
+    //funcion para borrar notas, borra la nota activa
+    const onDelete = () => {
+        dispatch( startDeletingNote() ); //llamamos a la funcion del archivo store/journal/thunks
     }
 
     return (
@@ -151,6 +156,17 @@ export const NoteView = () => {
                     value={body}
                     onChange={onInputChange}
                 />
+            </Grid>
+
+            <Grid container justifyContent='end'>
+                <Button
+                     onClick={ onDelete }
+                     sx={{ mt:2 }}
+                     color="error"
+                >
+                    <DeleteOutline />
+                    Borrar
+                </Button>
             </Grid>
 
             {/* mandamos la galeria de imagenes que tenemos cargadas en note.imageUrls(notes es el atributo active de journlaSlice)

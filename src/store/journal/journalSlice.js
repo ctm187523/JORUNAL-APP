@@ -7,15 +7,8 @@ export const journalSlice = createSlice({
         isSaving: false,
         messageSaved: '',
         notes: [],
-        active: null,
-        //active seria una nota
-        // active: {
-        //     id: 'ABC123',
-        //     title: '',
-        //     body: '',
-        //     date: 1234567,
-        //     imageUrls: [], //arreglo de https con las imagenes
-        // }
+        active: null,  //active seria la nota activa en ese monento
+       
     },
     reducers: { //los reducers siempre tienen que ser sincronos para acciones asincronas usamos el archivo thunks.js
 
@@ -80,9 +73,14 @@ export const journalSlice = createSlice({
             state.active = null;
         },
 
-
+        //metodo encargado de borrar una nota, para borrar las imagenes de la nota seleccionada
+        //en cloudinary lo vemos en el testing de la seccion 21, video 320
         deleteNoteById: (state, action) => {
 
+            state.active = null; //ponemos el active en null para que al ser null JournalPage.jsx visualize el componente de NothingSelectedView en lugar de NoteView 
+            //usamos la funcion filter de javaScript para eliminar la nota que es igual al payload pasado por la funcion startDeletingNote de store/journal/thunks
+            //con filter creamos de nuevo el state.notes pero sin pasarle la nota seleccionada
+            state.notes = state.notes.filter((item ) => item.id !== action.payload);     
         },
 
     }
